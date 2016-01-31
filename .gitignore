@@ -1,0 +1,7 @@
+# Matlab autosave
+**/*.m~
+**/*.asv
+
+# Matlab data files
+**/*.mat
+**/*.mp4
