@@ -28,12 +28,13 @@ int main()
 	double z1[2];
 	int nDim = 2;
 	int nStep = 200;
-	void (*dynFun)(double, double[], double[]) = dynamicsFunction;
+	DynFun dynFun = dynamicsFunction;
 
 	z0[0] = 0.2;
 	z0[1] = -0.5;
 
-	eulerSim(dynFun, t0, t1, z0, z1, nDim, nStep);
+	IntegrationMethod method = Euler;
+	simulate(dynFun, t0, t1, z0, z1, nDim, nStep, method);
 
 }
 

@@ -7,8 +7,17 @@ using namespace std;
 #include "integrator.h"
 
 
+void printState(std::ofstream& file, double t, double z[], int nDim) {
+	file << t ;
+	for (int j = 0; j < nDim; j++) {
+		file << ", " << z[j];
+	}
+	file << "\n";
+}
+
+
 /* Takes a simple euler step for the system */
-void eulerStep(void (*dynFun)(double, double[], double[]), double t0, double t1, double z0[], double z1[], int nDim) {
+void eulerStep(DynFun dynFun, double t0, double t1, double z0[], double z1[], int nDim) {
 
 	double dt = t1 - t0;
 	double *dz;
@@ -24,9 +33,10 @@ void eulerStep(void (*dynFun)(double, double[], double[]), double t0, double t1,
 
 }
 
-
 /* Runs several time steps using euler integration */
-void eulerSim(void (*dynFun)(double, double[], double[]), double t0, double t1, double z0[], double z1[], int nDim, int nStep) {
+void simulate(DynFun dynFun, double t0, double t1, double z0[], double z1[],
+              int nDim, int nStep, IntegrationMethod method)
+{
 	double dt, tLow, tUpp;
 	double *zLow;
 	double *zUpp;
@@ -35,7 +45,7 @@ void eulerSim(void (*dynFun)(double, double[], double[]), double t0, double t1, 
 	zLow = new double[nDim];
 	zUpp = new double[nDim];
 
-    /// File IO stuff:
+	/// File IO stuff:
 	ofstream logFile;
 	logFile.open("logFile.csv");
 
@@ -49,22 +59,25 @@ void eulerSim(void (*dynFun)(double, double[], double[]), double t0, double t1, 
 	dt = (t1 - t0) / ((double) nStep);
 	for (int i = 0; i < nStep; i++) {
 		tUpp = tLow + dt;
-		eulerStep(dynFun, tLow, tUpp, zLow, zUpp, nDim);
+		switch (method) {
+		case Euler:
+			eulerStep(dynFun, tLow, tUpp, zLow, zUpp, nDim); break;
+		case MidPoint:
+			break;
+		case RungeKutta:
+			break;
+		}
 
 		/// Print the state of the simulation:
-		logFile << tLow ;
-		for (int j = 0; j < nDim; j++) {
-			logFile << ", " << zLow[j];
-		}
-		logFile << "\n";
+		printState(logFile, tLow, zLow, nDim);
 
 		/// Advance temp variables:
 		tLow = tUpp;
 		for (int j = 0; j < nDim; j++) {
 			zLow[j] = zUpp[j];
 		}
-
 	}
+	printState(logFile, tLow, zLow, nDim);
 
 	delete [] zLow;
 	delete [] zUpp;
