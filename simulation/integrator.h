@@ -9,9 +9,6 @@ enum IntegrationMethod {
 	RungeKutta
 };
 
-void eulerStep(DynFun dynFun,double t0, double t1, 
-	double z0[], double z1[], int nDim);
-
 void simulate(DynFun dynFun,double t0, double t1, 
 	double z0[], double z1[], int nDim, int nStep, IntegrationMethod method);
 

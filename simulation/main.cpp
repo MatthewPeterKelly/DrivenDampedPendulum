@@ -23,17 +23,17 @@ void dynamicsFunction(double t, double z[], double dz[]) {
 int main()
 {
 	double t0 = 0.0;
-	double t1 = 5.0;
+	double t1 = 15.0;
 	double z0[2];
 	double z1[2];
 	int nDim = 2;
-	int nStep = 200;
+	int nStep = 50;
 	DynFun dynFun = dynamicsFunction;
 
 	z0[0] = 0.2;
 	z0[1] = -0.5;
 
-	IntegrationMethod method = Euler;
+	IntegrationMethod method = RungeKutta;
 	simulate(dynFun, t0, t1, z0, z1, nDim, nStep, method);
 
 }
