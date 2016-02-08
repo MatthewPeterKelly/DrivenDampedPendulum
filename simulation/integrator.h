@@ -6,7 +6,8 @@ typedef void (*DynFun)(double, double[], double[]);
 enum IntegrationMethod {
 	Euler,
 	MidPoint,
-	RungeKutta
+	RungeKutta,
+	RK8
 };
 
 void simulate(DynFun dynFun,double t0, double t1, 
