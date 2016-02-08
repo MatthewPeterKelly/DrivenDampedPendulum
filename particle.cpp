@@ -5,15 +5,33 @@
  *                              Private Methods                               *
  ******************************************************************************/
 
-void Particle::timeStepParticle(void) {
+/* Integrate forward using Runge-Kutta method */
+void Particle::timeStep(void) {
 
 	double dt = 2*M_PI/nSubStep;
-	double dq = w;   
-	double dw = cos(t) - 0.1*w - sin(q);  // Dynamics
+	double dqLow = w;   
+	double dwLow = cos(t) - 0.1*w - sin(q);  // Dynamics
 
-	t = t + dt;
-	q = q + dt * dq;
-	w = w + dt * dw;
+	double tMid = t + 0.5*dt;
+	double qMidA = q + 0.5*dt * dqLow;
+	double wMidA = w + 0.5*dt * dwLow;
+	double dqMidA = wMidA;
+	double dwMidA = cos(tMid) - 0.1*wMidA - sin(qMidA);  // Dynamics
+
+	double	qMidB = q + dt*dqMidA;
+	double	wMidB = w + dt*dwMidA;
+	double dqMidB = wMidB;
+	double dwMidB = cos(tMid) - 0.1*wMidB - sin(qMidB);  // Dynamics
+
+	double tUpp = t + dt;
+	double qUpp = q + dt*dqMidB;
+	double wUpp = w + dt*dwMidB;
+	double dqUpp = wUpp;
+	double dwUpp = cos(tUpp) - 0.1*wUpp - sin(qUpp);  // Dynamics
+
+	t = tUpp;
+	q = q + (dt/6)*(dqLow + 2.0*dqMidA + 2.0*dqMidB + dqUpp);
+	w = w + (dt/6)*(dwLow + 2.0*dwMidA + 2.0*dwMidB + dwUpp);
 
 }
 
@@ -49,30 +67,30 @@ Particle::Particle(void) {
 	w = w0;
 }
 
-/* Simulates particle. If the simulation converges, then return true and
- * print the initial state */
-bool Particle::simulateOnePeriod(void){
+// /* Simulates particle. If the simulation converges, then return true and
+//  * print the initial state */
+// bool Particle::simulateOnePeriod(void){
 
-	// Simulation
-	for (int i=0; i<nSubStep; i++){
-		timeStepParticle();
-	}
-	k = k+1;  // Counter for number of periods
+// 	// Simulation
+// 	for (int i=0; i<nSubStep; i++){
+// 		timeStepParticle();
+// 	}
+// 	k = k+1;  // Counter for number of periods
 
-	// Project back to central basin:
-	double basin = (q+M_PI)/(2*M_PI);  // basin edges now at ... -2,-1,0,1,1,2, ... 
-	double shift = -2*M_PI*floor(basin);   // Shift required to map to [-pi,pi]
-	q0 = q0 + shift;
-	q = q + shift;
+// 	// Project back to central basin:
+// 	double basin = (q+M_PI)/(2*M_PI);  // basin edges now at ... -2,-1,0,1,1,2, ... 
+// 	double shift = -2*M_PI*floor(basin);   // Shift required to map to [-pi,pi]
+// 	double qShift = q + shift;
 
-	// Check if in basin of attraction:
-	bool flagInBasin = (q-qCenter)*(q-qCenter) + (w-wCenter)*(w-wCenter) < criticalRadius*criticalRadius;
-	if (flagInBasin){
-		printInitialState();
-	}
-	return flagInBasin;
+// 	// Check if in basin of attraction:
+// 	bool flagInBasin = (qShift-qCenter)*(qShift-qCenter) + (w-wCenter)*(w-wCenter) < criticalRadius*criticalRadius;
+// 	//if (flagInBasin){
+// 		// printInitialState();
+// 	//}
+// 	printState();
+// 	return flagInBasin;
 
-}
+// }
 
 
 void Particle::printState(void) {
@@ -81,3 +99,6 @@ void Particle::printState(void) {
 
 
 
+void Particle::printStateLog(){
+	printf("%6.4f, %6.4f, %6.4f\n",t,q,w);
+}

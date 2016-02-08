@@ -34,15 +34,13 @@ private:
 	int k = 0;   // number of periods 
 
 	/// How many time steps to use for each period of the forcing function:
-	int nSubStep = 20;
+	int nSubStep = 50;
 
 	/// Center of attraction in the first basin:
 	double qCenter = -2.0463;   // angle
 	double wCenter = 0.3927;  // rate
 	double criticalRadius = 0.1;  // radius of convergence in phase space
 
-	/// Simulate the system forward by one time step:
-	void timeStepParticle(void);
 
 	/// Prints the initial state of the trajectory:
 	void printInitialState(void);
@@ -52,10 +50,14 @@ public:
 
 	Particle(void);  // Creates a new particle
 
-	bool simulateOnePeriod(void);  // simulates a single period of the forcing function
+	// bool simulateOnePeriod(void);  // simulates a single period of the forcing function
 
 	void printState(void);  // Prints the current state of the particle
 
+	/// Simulate the system forward by one time step:
+	void timeStep(void);
+
+	void printStateLog(void);  // Returns a string with the time and state
 
 };
 

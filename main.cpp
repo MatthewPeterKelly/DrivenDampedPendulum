@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <random>
+#include <stdio.h>
 
 using namespace std;
 
@@ -10,20 +12,16 @@ Particle* particle;
 
 int main()
 {
+
 	Particle::initialize();
-
-	// Particles
 	particle = new Particle();
-	bool flagSuccess;
-	for (int i=0; i<1000; i++){
-	flagSuccess = particle->simulateOnePeriod();
-		if (flagSuccess){
-			break;
-		}
-	}
-	if (!flagSuccess){
-		cout << "Fail! \n";
-	}
+	particle->printStateLog();
 
-   return 0;
+	// Simulation:
+	for (int i = 0; i < 250; i++) {
+		particle->timeStep();
+		particle->printStateLog();
+	};
+
+	return 0;
 }
