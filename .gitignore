@@ -5,3 +5,10 @@
 # Matlab data files
 **/*.mat
 **/*.mp4
+
+# Data log files:
+**/*.csv
+
+# Executables:
+**/*.out
+
