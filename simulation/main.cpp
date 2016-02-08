@@ -5,6 +5,21 @@ using namespace std;
 
 #include "integrator.h"
 
+
+/* Template dynamics function */
+void dynamicsFunction(double t, double z[], double dz[]) {
+
+	double x = z[0];
+	double v = z[1];
+	double u = cos(t);
+	double dx = v;
+	double dv = u - 0.1 * v - sin(x);
+	dz[0] = dx;
+	dz[1] = dv;
+
+}
+
+
 int main()
 {
 	double t0 = 0.0;
@@ -13,11 +28,12 @@ int main()
 	double z1[2];
 	int nDim = 2;
 	int nStep = 200;
+	void (*dynFun)(double, double[], double[]) = dynamicsFunction;
 
 	z0[0] = 0.2;
 	z0[1] = -0.5;
 
-	eulerSim(t0, t1, z0, z1, nDim, nStep);
+	eulerSim(dynFun, t0, t1, z0, z1, nDim, nStep);
 
 }
 

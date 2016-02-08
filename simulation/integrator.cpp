@@ -7,27 +7,14 @@ using namespace std;
 #include "integrator.h"
 
 
-/* Template dynamics function */
-void dynamicsFunction(double t, double z[], double dz[]) {
-
-	double x = z[0];
-	double v = z[1];
-	double u = cos(t);
-	double dx = v;
-	double dv = u - 0.1 * v - sin(x);
-	dz[0] = dx;
-	dz[1] = dv;
-
-}
-
 /* Takes a simple euler step for the system */
-void eulerStep(double t0, double t1, double z0[], double z1[], int nDim) {
+void eulerStep(void (*dynFun)(double, double[], double[]), double t0, double t1, double z0[], double z1[], int nDim) {
 
 	double dt = t1 - t0;
 	double *dz;
 	dz = new double[nDim];
 
-	dynamicsFunction(t0, z0, dz);
+	dynFun(t0, z0, dz);
 
 	for (int i = 0; i < nDim; i++) {
 		z1[i] = z0[i] + dt * dz[i];
@@ -39,7 +26,7 @@ void eulerStep(double t0, double t1, double z0[], double z1[], int nDim) {
 
 
 /* Runs several time steps using euler integration */
-void eulerSim(double t0, double t1, double z0[], double z1[], int nDim, int nStep) {
+void eulerSim(void (*dynFun)(double, double[], double[]), double t0, double t1, double z0[], double z1[], int nDim, int nStep) {
 	double dt, tLow, tUpp;
 	double *zLow;
 	double *zUpp;
@@ -62,7 +49,7 @@ void eulerSim(double t0, double t1, double z0[], double z1[], int nDim, int nSte
 	dt = (t1 - t0) / ((double) nStep);
 	for (int i = 0; i < nStep; i++) {
 		tUpp = tLow + dt;
-		eulerStep(tLow, tUpp, zLow, zUpp, nDim);
+		eulerStep(dynFun, tLow, tUpp, zLow, zUpp, nDim);
 
 		/// Print the state of the simulation:
 		logFile << tLow ;
