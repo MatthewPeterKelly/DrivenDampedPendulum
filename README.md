@@ -1,6 +1,6 @@
 # Driven Damped Pendulum
 
-Simple Matlab project that I wrote back in grad school to render the "Driven Damped Pendulum".
+Simple project that I wrote back in grad school to render the "Driven Damped Pendulum". 
 
 ## Animations:
 
